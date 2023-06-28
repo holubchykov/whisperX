@@ -15,8 +15,8 @@ class DiarizationPipeline:
             device = torch.device(device)
         self.model = Pipeline.from_pretrained(model_name, use_auth_token=use_auth_token).to(device)
 
-    def __call__(self, audio, min_speakers=None, max_speakers=None):
-        segments, embeddings = self.model(audio, min_speakers=min_speakers, max_speakers=max_speakers, return_embeddings=True)
+    def __call__(self, audio, min_speakers=None, max_speakers=None, return_embeddings=False):
+        segments, embeddings = self.model(audio, min_speakers=min_speakers, max_speakers=max_speakers, return_embeddings=return_embeddings)
         diarize_df = pd.DataFrame(segments.itertracks(yield_label=True))
         diarize_df['start'] = diarize_df[0].apply(lambda x: x.start)
         diarize_df['end'] = diarize_df[0].apply(lambda x: x.end)
